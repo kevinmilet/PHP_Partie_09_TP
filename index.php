@@ -214,7 +214,8 @@
                     echo '<div class="row">';
 
                     foreach($chunkCalendar[$week] as $day){
-                    
+                        $caseClass = '';
+                    echo '----'.$day.'---';
                         // on récupère les valeurs du tableau des jours fériés
                         $isHoliday = holiday_day(strtotime($today.'-'.$month.'-'.$year));
 
