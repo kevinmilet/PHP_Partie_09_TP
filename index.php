@@ -21,9 +21,6 @@
         '12'=>'Décembre'
     );
 
-    // initialisation de la variable qui ajoute une classe css
-    $caseClass = '';
-
     // nombre de jours dans le mois choisi
     $nbDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 
@@ -214,8 +211,9 @@
                     echo '<div class="row">';
 
                     foreach($chunkCalendar[$week] as $day){
+
                         $caseClass = '';
-                    echo '----'.$day.'---';
+                    
                         // on récupère les valeurs du tableau des jours fériés
                         $isHoliday = holiday_day(strtotime($today.'-'.$month.'-'.$year));
 
