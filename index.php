@@ -1,13 +1,9 @@
 <?php
 
     // vérifie si les parametres sont présents, sinon on leur donne une valeur par défaut -> mois et année en cours
-    if (empty($_GET['month']) && empty($_GET['year'])) {
-        $month = date('n');
-        $year = date('Y');
-    } else {
-        $month = $_GET['month'];
-        $year = $_GET['year'];
-    }
+    $month = empty($_GET['month']) ? date('n') :  $_GET['month'];
+    $year = empty($_GET['year']) ? date('Y') : $_GET['year'];
+    $today = date('j');
 
     // liste des mois en français
     $monthList = array(
@@ -24,6 +20,9 @@
         '11'=>'Novembre',
         '12'=>'Décembre'
     );
+
+    // initialisation de la variable qui ajoute une classe css
+    $caseClass = '';
 
     // nombre de jours dans le mois choisi
     $nbDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
@@ -48,107 +47,79 @@
         array_push($calendar, null);
     }
 
-    $caseClass = '';
-
     // fonction pour déterminer si le jour est férié
     function holiday_day($timestamp) {
-        $hDay = date("d", $timestamp);
-        $hMonth = date("m", $timestamp);
-        $hYear = date("Y", $timestamp);
-        $isHoliday = array (false, '');
-        $holiday = '';
+        $hDay = date('j', $timestamp);
+        $hMonth = date('n', $timestamp);
+        $hYear = date('Y', $timestamp);
+        $holiday = [];
 
         // dates fériées fixes
 
         // 1er janvier - Jour de l'an
-        if ($hDay == 1 && $hMonth == 1) {
-            $isHoliday = array (true, 'Jour de l\'an'); 
-        }
+        $holiday['1-1'] = 'Jour de l\'an';
 
         // 1er mai - Fête du travail
-        if ($hDay == 1 && $hMonth == 5) {
-            $isHoliday = array (true, 'Fête du travail'); 
-        }
+        $holiday['1-5'] = 'Fête du travail';
 
         // 8 mai - Fête de la Victoire
-        if ($hDay == 8 && $hMonth == 5) {
-            $isHoliday = array (true, 'Fête de la Victoire'); 
-        }
+        $holiday['8-5'] = 'Fête de la Victoire';
 
         // 14 juillet - fête nationale
-        if ($hDay == 14 && $hMonth == 7) {
-            $isHoliday = array (true, 'Fête Nationale'); 
-        }
+        $holiday['14-7'] = 'Fête Nationale';
 
         // 15 aout - Assomption
-        if ($hDay == 15 && $hMonth == 8) {
-            $isHoliday = array (true, 'Assomption'); 
-        }
+        $holiday['15-8'] = 'Assomption';
 
         // 1 novembre - Toussaint
-        if ($hDay == 1 && $hMonth == 11) {
-            $isHoliday = array (true, 'Toussaint'); 
-        }
+        $holiday['1-11'] = 'Toussaint';
 
         // 11 novembre - Armistice
-        if ($hDay == 11 && $hMonth == 11){
-            $isHoliday = array (true, 'Armistice'); 
-        }
+        $holiday['11-11'] = 'Armistice';
 
         // 25 décembre - Noël
-        if ($hDay == 25 && $hMonth == 12){
-            $isHoliday = array (true, 'Noël'); 
-        } 
+        $holiday['25-12'] = 'Noël';
 
         // fetes religieuses mobiles
         $easter = easter_date($hYear);
-        $easterDay = date("d", $easter);
-        $easterMonth = date("m", $easter);
+        $easterDay = date('j', $easter);
+        $easterMonth = date('n', $easter);
 
         // Pâques
-        if ($easterDay == $hDay && $easterMonth == $hMonth){
-            $isHoliday = array (true, 'Pâques');
-        }
+        $holiday[$easterDay.'-'.$easterMonth] = 'Pâques';
 
         // Lundi de Pâques
-        $easterMonday = mktime(date("H", $easter), date("i", $easter), date("s", $easter), date("m", $easter), date("d", $easter) +1, date("Y", $easter) );
-        $easterDay = date("d", $easterMonday);
-        $easterMonth = date("m", $easterMonday);
+        $easterMonday = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) +1, date('Y', $easter) );
+        $easterDay = date('j', $easterMonday);
+        $easterMonth = date('n', $easterMonday);
 
-        if ($easterDay == $hDay && $easterMonth == $hMonth){
-            $isHoliday = array (true, 'Lundi de Pâques');
-        }
-        
+        $holiday[$easterDay.'-'.$easterMonth] = 'Lundi de Pâques';
+
         //ascension
-        $ascension = mktime(date("H", $easter), date("i", $easter), date("s", $easter), date("m", $easter), date("d", $easter) + 39, date("Y", $easter) );
-        $easterDay = date("d", $ascension);
-        $easterMonth = date("m", $ascension);
+        $ascension = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 39, date('Y', $easter) );
+        $easterDay = date('j', $ascension);
+        $easterMonth = date('n', $ascension);
 
-        if ($easterDay == $hDay && $easterMonth == $hMonth){
-            $isHoliday = array (true, 'Ascension');
-        }
+        $holiday[$easterDay.'-'.$easterMonth] = 'Ascension';
 
         // Pentecôte
-        $pentecote = mktime(date("H", $easter), date("i", $easter), date("s", $easter), date("m", $easter), date("d", $easter) + 49, date("Y", $easter) );
-        $easterDay = date("d", $pentecote);
-        $easterMonth = date("m", $pentecote);
+        $pentecote = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 49, date('Y', $easter) );
+        $easterDay = date('j', $pentecote);
+        $easterMonth = date('n', $pentecote);
 
-        if ($easterDay == $hDay && $easterMonth == $hMonth) {
-            $isHoliday = array (true, 'Pentecôte');
-        }
+        $holiday[$easterDay.'-'.$easterMonth] = 'Pentecôte';
 
         // lundi Pentecôte
-        $pentecoteMonday = mktime(date("H", $ascension), date("i", $easter), date("s", $easter), date("m", $easter), date("d", $easter) + 50, date("Y", $easter) );
-        $easterDay = date("d", $pentecoteMonday);
-        $easterMonth = date("m", $pentecoteMonday);
+        $pentecoteMonday = mktime(date('H', $ascension), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 50, date('Y', $easter) );
+        $easterDay = date('j', $pentecoteMonday);
+        $easterMonth = date('n', $pentecoteMonday);
 
-        if ($easterDay == $hDay && $easterMonth == $hMonth) {
-            $isHoliday = array (true, 'Lundi de Pentecôte');
-        }
+        $holiday[$easterDay.'-'.$easterMonth] = 'Lundi de Pentecôte';
 
-        return $isHoliday;
-        
-}
+        return $holiday;
+
+    }
+    var_dump(holiday_day(strtotime($today.'-'.$month.'-'.$year)));
 ?>
 
 <!-- partie html de la page -->
@@ -164,7 +135,7 @@
 <body>
 
     <div class="container">
-        
+
         <!-- Formulaire permettant de choisir un mois et une année -->
         <div class="mt-2 formular">
 
@@ -187,7 +158,7 @@
                     <label for="year">Année</label>
                     <select name="year" id="year" class="form-control ml-2">
                         <?php
-                            for ($i = (date('Y') - 5); $i <= (date('Y') + 10); $i++) {
+                            for ($i = (date('Y') - 1); $i <= (date('Y') + 9); $i++) {
                                 echo '<option value="'.$i.'">'.$i.'</option>';
                             }
                         ?>
@@ -205,7 +176,8 @@
         <!-- Calendrier -->
         <div class="container my-5">
             <div class="row month-title">
-                <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href=""><i class="fas fa-chevron-left"></i></a> <a href=""><i class="fas fa-chevron-right"></i></a></h4>
+                <!-- <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href=""><i class="fas fa-chevron-left"></i></a> <a href=""><i class="fas fa-chevron-right"></i></a></h4> -->
+                <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4>
             </div>
 
             <div class="row days">
@@ -236,26 +208,29 @@
             <?php
                 // on sépare le tableau contenant le mois en cours en plusieurs tableaux de 7 jours
                 $chunkCalendar = array_chunk($calendar, 7);
-                
+
                 foreach($chunkCalendar as $week => $days) {
                     // ouverture de la ligne
                     echo '<div class="row">';
 
                     foreach($chunkCalendar[$week] as $day){
-
+                    
                         // on récupère les valeurs du tableau des jours fériés
-                        $holiday = holiday_day(strtotime($day.'-'.$month.'-'.$year));
-                        
+                        $isHoliday = holiday_day(strtotime($today.'-'.$month.'-'.$year));
+
+                        // on rempli le calendrier
                         if ($day == null) {
                             $caseClass = ' empty';
-                        } elseif ($day.'-'.$month.'-'.$year == date('j-m-Y')){
+                        } elseif ($day.'-'.$month.'-'.$year == date('j-n-Y')){
                             $caseClass = ' current';
-                        } elseif ($holiday[0] === true) {
-                            $caseClass = ' holiday';
+                        } elseif (isset($isHoliday[$day.'-'.$month])){
+                            if ($isHoliday[$day.'-'.$month] == $day.'-'.$month) {
+                                    $caseClass = ' holiday';
+                                }     
                         } else {
                             $caseClass = '';
                         }
-                        echo '<div class="col day-case'.$caseClass.'">'.$day.' '.$holiday[1].'</div>';
+                        echo '<div class="col day-case'.$caseClass.'">'.$day.'</div>';
                     }
                     // fermeture de la ligne
                     echo '</div>';
