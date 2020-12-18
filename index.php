@@ -1,139 +1,137 @@
 <?php
 
-    // vérifie si les parametres sont présents, sinon on leur donne une valeur par défaut -> mois et année en cours
-    $month = empty($_GET['month']) ? date('n') :  $_GET['month'];
-    $year = empty($_GET['year']) ? date('Y') : $_GET['year'];
-    $today = date('j');
+// vérifie si les parametres sont présents, sinon on leur donne une valeur par défaut -> mois et année en cours
+$month = empty($_GET['month']) ? date('n') : $_GET['month'];
+$year = empty($_GET['year']) ? date('Y') : $_GET['year'];
+$today = date('j');
 
-    // liste des mois en français
-    $monthList = array(
-        '1'=>'Janvier',
-        '2'=>'Février',
-        '3'=>'Mars',
-        '4'=>'Avril',
-        '5'=>'Mai',
-        '6'=>'Juin',
-        '7'=>'Juillet',
-        '8'=>'Août',
-        '9'=>'Septembre',
-        '10'=>'Octobre',
-        '11'=>'Novembre',
-        '12'=>'Décembre'
-    );
+// liste des mois en français
+$monthList = array(
+    '1' => 'Janvier',
+    '2' => 'Février',
+    '3' => 'Mars',
+    '4' => 'Avril',
+    '5' => 'Mai',
+    '6' => 'Juin',
+    '7' => 'Juillet',
+    '8' => 'Août',
+    '9' => 'Septembre',
+    '10' => 'Octobre',
+    '11' => 'Novembre',
+    '12' => 'Décembre',
+);
 
-    // nombre de jours dans le mois choisi
-    $nbDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+// nombre de jours dans le mois choisi
+$nbDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 
-    // 1er jour du mois choisi
-    setlocale(LC_ALL, 'fr_FR', 'french', 'fra');
-    $firstDay = intval(strftime('%u', strtotime($year.'-'.$month.'-01')));
+// 1er jour du mois choisi
+setlocale(LC_ALL, 'fr_FR', 'french', 'fra');
+$firstDay = intval(strftime('%u', strtotime($year . '-' . $month . '-01')));
 
-    // dernier jour du mois choisi
-    $lastDay = intval(strftime('%u', strtotime($year.'-'.$month.'-'.$nbDays)));
+// dernier jour du mois choisi
+$lastDay = intval(strftime('%u', strtotime($year . '-' . $month . '-' . $nbDays)));
 
-    // remplissage du tableau calendrier
-    $calendar = array();
+// remplissage du tableau calendrier
+$calendar = array();
 
-    for ($a = 1; $a <= $firstDay - 1; $a++) {
-        array_push($calendar, null);
-    }
-    for ($b = 1; $b <= $nbDays; $b++) {
-        array_push($calendar, $b);
-    }
-    for ($c = $lastDay - 1; $c < 6; $c++) {
-        array_push($calendar, null);
-    }
+for ($a = 1; $a <= $firstDay - 1; $a++) {
+    array_push($calendar, null);
+}
+for ($b = 1; $b <= $nbDays; $b++) {
+    array_push($calendar, $b);
+}
+for ($c = $lastDay - 1; $c < 6; $c++) {
+    array_push($calendar, null);
+}
 
-    // fonction pour déterminer si le jour est férié
-    function holiday_day($timestamp) {
-        $hDay = date('j', $timestamp);
-        $hMonth = date('n', $timestamp);
-        $hYear = date('Y', $timestamp);
-        $holiday = [];
+// fonction pour déterminer si le jour est férié
+function holiday_day($timestamp)
+{
+    $hDay = date('j', $timestamp);
+    $hMonth = date('n', $timestamp);
+    $hYear = date('Y', $timestamp);
+    $holiday = [];
 
-        // dates fériées fixes
+    // dates fériées fixes
 
-        // 1er janvier - Jour de l'an
-        $holiday['1-1'] = 'Jour de l\'an';
+    // 1er janvier - Jour de l'an
+    $holiday['1-1'] = 'Jour de l\'an';
 
-        // 1er mai - Fête du travail
-        $holiday['1-5'] = 'Fête du travail';
+    // 1er mai - Fête du travail
+    $holiday['1-5'] = 'Fête du travail';
 
-        // 8 mai - Fête de la Victoire
-        $holiday['8-5'] = 'Fête de la Victoire';
+    // 8 mai - Fête de la Victoire
+    $holiday['8-5'] = 'Fête de la Victoire';
 
-        // 14 juillet - fête nationale
-        $holiday['14-7'] = 'Fête Nationale';
+    // 14 juillet - fête nationale
+    $holiday['14-7'] = 'Fête Nationale';
 
-        // 15 aout - Assomption
-        $holiday['15-8'] = 'Assomption';
+    // 15 aout - Assomption
+    $holiday['15-8'] = 'Assomption';
 
-        // 1 novembre - Toussaint
-        $holiday['1-11'] = 'Toussaint';
+    // 1 novembre - Toussaint
+    $holiday['1-11'] = 'Toussaint';
 
-        // 11 novembre - Armistice
-        $holiday['11-11'] = 'Armistice';
+    // 11 novembre - Armistice
+    $holiday['11-11'] = 'Armistice';
 
-        // 25 décembre - Noël
-        $holiday['25-12'] = '<i class="fas fa-tree-christmas"></i> Noël';
+    // 25 décembre - Noël
+    $holiday['25-12'] = '<i class="fas fa-tree-christmas"></i> Noël';
 
-        // fetes religieuses mobiles
-        $easter = easter_date($hYear);
-        $easterDay = date('j', $easter);
-        $easterMonth = date('n', $easter);
+    // fetes religieuses mobiles
+    $easter = easter_date($hYear);
+    $easterDay = date('j', $easter);
+    $easterMonth = date('n', $easter);
 
-        // Pâques
-        $holiday[$easterDay.'-'.$easterMonth] = '<i class="fas fa-egg"></i> Pâques';
+    // Pâques
+    $holiday[$easterDay . '-' . $easterMonth] = '<i class="fas fa-egg"></i> Pâques';
 
-        // Lundi de Pâques
-        $easterMonday = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) +1, date('Y', $easter) );
-        $easterDay = date('j', $easterMonday);
-        $easterMonth = date('n', $easterMonday);
+    // Lundi de Pâques
+    $easterMonday = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 1, date('Y', $easter));
+    $easterDay = date('j', $easterMonday);
+    $easterMonth = date('n', $easterMonday);
 
-        $holiday[$easterDay.'-'.$easterMonth] = 'Lundi de Pâques';
+    $holiday[$easterDay . '-' . $easterMonth] = 'Lundi de Pâques';
 
-        //ascension
-        $ascension = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 39, date('Y', $easter) );
-        $easterDay = date('j', $ascension);
-        $easterMonth = date('n', $ascension);
+    //ascension
+    $ascension = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 39, date('Y', $easter));
+    $easterDay = date('j', $ascension);
+    $easterMonth = date('n', $ascension);
 
-        $holiday[$easterDay.'-'.$easterMonth] = 'Ascension';
+    $holiday[$easterDay . '-' . $easterMonth] = 'Ascension';
 
-        // Pentecôte
-        $pentecote = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 49, date('Y', $easter) );
-        $easterDay = date('j', $pentecote);
-        $easterMonth = date('n', $pentecote);
+    // Pentecôte
+    $pentecote = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 49, date('Y', $easter));
+    $easterDay = date('j', $pentecote);
+    $easterMonth = date('n', $pentecote);
 
-        $holiday[$easterDay.'-'.$easterMonth] = 'Pentecôte';
+    $holiday[$easterDay . '-' . $easterMonth] = 'Pentecôte';
 
-        // lundi Pentecôte
-        $pentecoteMonday = mktime(date('H', $ascension), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 50, date('Y', $easter) );
-        $easterDay = date('j', $pentecoteMonday);
-        $easterMonth = date('n', $pentecoteMonday);
+    // lundi Pentecôte
+    $pentecoteMonday = mktime(date('H', $ascension), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) + 50, date('Y', $easter));
+    $easterDay = date('j', $pentecoteMonday);
+    $easterMonth = date('n', $pentecoteMonday);
 
-        $holiday[$easterDay.'-'.$easterMonth] = 'Lundi de Pentecôte';
+    $holiday[$easterDay . '-' . $easterMonth] = 'Lundi de Pentecôte';
 
-        return $holiday;
+    return $holiday;
 
-    }
+}
 
-    $birthday = array(
-        '20-6' => 'Kevin',
-        '21-8' => 'Florian M.',
-        '24-4' => 'Timothy',
-        '26-11' => 'Jérome',
-        '29-4' => 'Lucas',
-        '2-9' => 'Julien',
-        '12-11' => 'Vincent',
-        '4-7' => 'Florian L.',
-        '12-3' => 'Laurent',
-        '6-11' => 'Stéphane'
-    );
+$birthday = array(
+    '20-6' => 'Kevin',
+    '21-8' => 'Florian M.',
+    '24-4' => 'Timothy',
+    '26-11' => 'Jérome',
+    '29-4' => 'Lucas',
+    '2-9' => 'Julien',
+    '12-11' => 'Vincent',
+    '4-7' => 'Florian L.',
+    '12-3' => 'Laurent',
+    '6-11' => 'Stéphane',
+);
 
-    
 ?>
-
-
 
 <!-- partie html de la page -->
 <!DOCTYPE html>
@@ -159,22 +157,26 @@
                 <div class="form-group ml-2">
                     <label for="month">Mois</label>
                     <select name="month" id="month" class="form-control ml-2">
+
                         <?php
-                            foreach ($monthList as $key => $value) {
-                                echo '<option value="'.$key.'">'.$value.'</option>';
-                            }
-                        ?>
+foreach ($monthList as $key => $value) {
+    echo '<option value="' . $key . '">' . $value . '</option>';
+}
+?>
+
                     </select>
                 </div>
 
                 <div class="form-group ml-2">
                     <label for="year">Année</label>
                     <select name="year" id="year" class="form-control ml-2">
+
                         <?php
-                            for ($i = (date('Y') - 1); $i <= (date('Y') + 9); $i++) {
-                                echo '<option value="'.$i.'">'.$i.'</option>';
-                            }
-                        ?>
+for ($i = (date('Y') - 1); $i <= (date('Y') + 9); $i++) {
+    echo '<option value="' . $i . '">' . $i . '</option>';
+}
+?>
+
                     </select>
                 </div>
 
@@ -193,9 +195,6 @@
                     <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href="" type="submit" name="dec"><i class="fas fa-chevron-left"></i></a> <a href="" type="submit" name="inc"><i class="fas fa-chevron-right"></i></a></h4>
                 </form>
                 <!-- <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4> -->
-                
-
-                
             </div>
 
             <div class="row days">
@@ -224,48 +223,48 @@
 
             <!-- Rendu du calendrier -->
             <?php
-                // on sépare le tableau contenant le mois en cours en plusieurs tableaux de 7 jours
-                $chunkCalendar = array_chunk($calendar, 7);
+// on sépare le tableau contenant le mois en cours en plusieurs tableaux de 7 jours
+$chunkCalendar = array_chunk($calendar, 7);
 
-                foreach($chunkCalendar as $week => $days) {
-                    // ouverture de la ligne
-                    echo '<div class="row">';
+foreach ($chunkCalendar as $week => $days) {
+    // ouverture de la ligne
+    echo '<div class="row">';
 
-                    foreach($chunkCalendar[$week] as $day){
+    foreach ($chunkCalendar[$week] as $day) {
 
-                        $caseClass = '';
-                    
-                        // on récupère les valeurs du tableau des jours fériés
-                        $isHoliday = holiday_day(strtotime($today.'-'.$month.'-'.$year));
+        $caseClass = '';
 
-                        // on rempli le calendrier
-                        if ($day == null) { // affichage des cases vides avant 1er jour et après dernier jour
-                            $caseClass = ' empty';
-                        } elseif ($day.'-'.$month.'-'.$year == date('j-n-Y')){ // mise en évidence jour actuel
-                            $caseClass = ' current';
-                        } elseif (isset($isHoliday[$day.'-'.$month])){ // affichage des jours fériés
-                            if (key($isHoliday) != $day.'-'.$month || key($isHoliday) == '1-1') {
-                                    $caseClass = ' holiday';
-                                }
-                        } elseif (key($birthday) == $day.'-'.$month){ // affichage des anniversaires
-                                $caseClass = ' birthday';
-                        } else {
-                            $caseClass = ' normal';
-                        }
-                        if (isset($isHoliday[$day.'-'.$month])) {
-                            // affichage jour férié
-                            echo '<div class="col day-case'.$caseClass.'">'.$day.' '.$isHoliday[$day.'-'.$month].'</div>';
-                        } elseif (isset($birthday[$day.'-'.$month])) {
-                            // affichage de l'anniversaire
-                            echo '<div class="col day-case'.$caseClass.'">'.$day.' '.'<i class="fas fa-birthday-cake"></i> '.$birthday[$day.'-'.$month].'</div>';
-                        } else {
-                            echo '<div class="col day-case'.$caseClass.'">'.$day.'</div>';
-                        }
-                    }
-                    // fermeture de la ligne
-                    echo '</div>';
-                }
-            ?>
+        // on récupère les valeurs du tableau des jours fériés
+        $isHoliday = holiday_day(strtotime($today . '-' . $month . '-' . $year));
+
+        // on rempli le calendrier
+        if ($day == null) { // affichage des cases vides avant 1er jour et après dernier jour
+            $caseClass = ' empty';
+        } elseif ($day . '-' . $month . '-' . $year == date('j-n-Y')) { // mise en évidence jour actuel
+            $caseClass = ' current';
+        } elseif (isset($isHoliday[$day . '-' . $month])) { // affichage des jours fériés
+            if (key($isHoliday) != $day . '-' . $month || key($isHoliday) == '1-1') {
+                $caseClass = ' holiday';
+            }
+        } elseif (key($birthday) == $day . '-' . $month) { // affichage des anniversaires
+            $caseClass = ' birthday';
+        } else {
+            $caseClass = ' normal';
+        }
+        if (isset($isHoliday[$day . '-' . $month])) {
+            // affichage jour férié
+            echo '<div class="col day-case' . $caseClass . '">' . $day . ' ' . $isHoliday[$day . '-' . $month] . '</div>';
+        } elseif (isset($birthday[$day . '-' . $month])) {
+            // affichage de l'anniversaire
+            echo '<div class="col day-case' . $caseClass . '">' . $day . ' ' . '<i class="fas fa-birthday-cake"></i> ' . $birthday[$day . '-' . $month] . '</div>';
+        } else {
+            echo '<div class="col day-case' . $caseClass . '">' . $day . '</div>';
+        }
+    }
+    // fermeture de la ligne
+    echo '</div>';
+}
+?>
         </div>
     </div>
 
