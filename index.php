@@ -75,7 +75,7 @@
         $holiday['11-11'] = 'Armistice';
 
         // 25 décembre - Noël
-        $holiday['25-12'] = 'Noël';
+        $holiday['25-12'] = '<i class="fas fa-tree-christmas"></i> Noël';
 
         // fetes religieuses mobiles
         $easter = easter_date($hYear);
@@ -83,7 +83,7 @@
         $easterMonth = date('n', $easter);
 
         // Pâques
-        $holiday[$easterDay.'-'.$easterMonth] = 'Pâques';
+        $holiday[$easterDay.'-'.$easterMonth] = '<i class="fas fa-egg"></i> Pâques';
 
         // Lundi de Pâques
         $easterMonday = mktime(date('H', $easter), date('i', $easter), date('s', $easter), date('n', $easter), date('j', $easter) +1, date('Y', $easter) );
@@ -116,8 +116,24 @@
         return $holiday;
 
     }
-    var_dump(holiday_day(strtotime($today.'-'.$month.'-'.$year)));
+
+    $birthday = array(
+        '20-6' => 'Kevin',
+        '21-8' => 'Florian M.',
+        '24-4' => 'Timothy',
+        '26-11' => 'Jérome',
+        '29-4' => 'Lucas',
+        '2-9' => 'Julien',
+        '12-11' => 'Vincent',
+        '4-7' => 'Florian L.',
+        '12-3' => 'Laurent',
+        '6-11' => 'Stéphane'
+    );
+
+    
 ?>
+
+
 
 <!-- partie html de la page -->
 <!DOCTYPE html>
@@ -173,8 +189,13 @@
         <!-- Calendrier -->
         <div class="container my-5">
             <div class="row month-title">
-                <!-- <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href=""><i class="fas fa-chevron-left"></i></a> <a href=""><i class="fas fa-chevron-right"></i></a></h4> -->
-                <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4>
+                <form action="" method="get">
+                    <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href="" type="submit" name="dec"><i class="fas fa-chevron-left"></i></a> <a href="" type="submit" name="inc"><i class="fas fa-chevron-right"></i></a></h4>
+                </form>
+                <!-- <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4> -->
+                
+
+                
             </div>
 
             <div class="row days">
@@ -218,26 +239,34 @@
                         $isHoliday = holiday_day(strtotime($today.'-'.$month.'-'.$year));
 
                         // on rempli le calendrier
-                        if ($day == null) {
+                        if ($day == null) { // affichage des cases vides avant 1er jour et après dernier jour
                             $caseClass = ' empty';
-                        } elseif ($day.'-'.$month.'-'.$year == date('j-n-Y')){
+                        } elseif ($day.'-'.$month.'-'.$year == date('j-n-Y')){ // mise en évidence jour actuel
                             $caseClass = ' current';
-                        } elseif (isset($isHoliday[$day.'-'.$month])){
-                            if ($isHoliday[$day.'-'.$month] == $day.'-'.$month) {
+                        } elseif (isset($isHoliday[$day.'-'.$month])){ // affichage des jours fériés
+                            if (key($isHoliday) != $day.'-'.$month || key($isHoliday) == '1-1') {
                                     $caseClass = ' holiday';
-                                }     
+                                }
+                        } elseif (key($birthday) == $day.'-'.$month){ // affichage des anniversaires
+                                $caseClass = ' birthday';
                         } else {
-                            $caseClass = '';
+                            $caseClass = ' normal';
                         }
-                        echo '<div class="col day-case'.$caseClass.'">'.$day.'</div>';
+                        if (isset($isHoliday[$day.'-'.$month])) {
+                            // affichage jour férié
+                            echo '<div class="col day-case'.$caseClass.'">'.$day.' '.$isHoliday[$day.'-'.$month].'</div>';
+                        } elseif (isset($birthday[$day.'-'.$month])) {
+                            // affichage de l'anniversaire
+                            echo '<div class="col day-case'.$caseClass.'">'.$day.' '.'<i class="fas fa-birthday-cake"></i> '.$birthday[$day.'-'.$month].'</div>';
+                        } else {
+                            echo '<div class="col day-case'.$caseClass.'">'.$day.'</div>';
+                        }
                     }
                     // fermeture de la ligne
                     echo '</div>';
                 }
             ?>
-
         </div>
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

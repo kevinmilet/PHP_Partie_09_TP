@@ -14,15 +14,23 @@
 }
 
 .empty {
-    background-color: #e0e0e0!important;
+    background-color: #eeeeee!important;
 }
 
 .current {
-    background-color:#66bb6a!important;
+    background-color:#a5d6a7!important;
 }
 
 .holiday {
-    background-color:#ef5350!important;
+    background-color:#ef9a9a!important;
+}
+
+.birthday {
+    background-color: #ffcc80!important;
+}
+
+.normal {
+    background-color: #fafafa;
 }
 
 a, a:hover {
