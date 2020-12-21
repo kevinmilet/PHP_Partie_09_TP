@@ -223,12 +223,12 @@ for ($i = (date('Y') - 1); $i <= (date('Y') + 9); $i++) {
         </div>
 
         <!-- Calendrier -->
-        <div class="container my-5">
+        <div class="container my-4">
             <div class="row month-title">
-                <form action="" method="get">
+                <!-- <form action="" method="get">
                     <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href="" type="submit" name="dec"><i class="fas fa-chevron-left"></i></a> <a href="" type="submit" name="inc"><i class="fas fa-chevron-right"></i></a></h4>
-                </form>
-                <!-- <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4> -->
+                </form> -->
+                <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4>
             </div>
 
             <div class="row days">
@@ -285,7 +285,7 @@ foreach ($chunkCalendar as $week => $days) {
         } else {
             $caseClass = ' normal';
         }
-        
+
         if (isset($isHoliday[$day . '-' . $month])) {
             // affichage jour férié
             echo '<div class="col day-case' . $caseClass . '">' . $day . ' ' . $isHoliday[$day . '-' . $month] . '</div>';
