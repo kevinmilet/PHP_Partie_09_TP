@@ -134,6 +134,10 @@ $birthday = array(
     '6-11' => '<i class="fas fa-birthday-cake"></i> Stéphane',
 );
 
+$tasks = array(
+    '1-1' => '<i class="far fa-laugh-beam"></i> Bonne Année!!!'
+);
+
 // tableau des fériés générés gràce à la fonction dédiée
 $isHoliday = holiday_day(strtotime($today . '-' . $month . '-' . $year));
 
@@ -163,3 +167,5 @@ $eventsCalendar = [];
 array_push($eventsCalendar, createObjEventType($birthday, '#ffcc80', 'Anniversaires'));
 
 array_push($eventsCalendar, createObjEventType($isHoliday, '#ef9a9a', 'Fériés'));
+
+array_push($eventsCalendar, createObjEventType($tasks, '#ef9a9a', 'Tâches'));

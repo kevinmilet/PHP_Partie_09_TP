@@ -1,3 +1,8 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -30,7 +35,11 @@
 include 'functions.php';
                         
 foreach ($monthList as $key => $value) {
-    echo '<option value="' . $key . '">' . $value . '</option>';
+    if($key == $_GET['month']) {
+        $selected = ' selected';
+    } else { $selected = '';
+    }
+    echo '<option value="' . $key . '"'.$selected.'>' . $value . '</option>';
 }
 ?>
 
@@ -43,7 +52,11 @@ foreach ($monthList as $key => $value) {
 
                         <?php
 for ($i = (date('Y') - 1); $i <= (date('Y') + 9); $i++) {
-    echo '<option value="' . $i . '">' . $i . '</option>';
+    if ($i == $_GET['year']) {
+        $selected = ' selected';
+    } else { $selected = '';
+    }
+    echo '<option value="' . $i . '"'.$selected.'>' . $i . '</option>';
 }
 ?>
 
@@ -61,32 +74,32 @@ for ($i = (date('Y') - 1); $i <= (date('Y') + 9); $i++) {
         <!-- Calendrier -->
         <div class="container my-4">
             <div class="row month-title">
-                <!-- <form action="" method="get">
-                    <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href="" type="submit" name="dec"><i class="fas fa-chevron-left"></i></a> <a href="" type="submit" name="inc"><i class="fas fa-chevron-right"></i></a></h4>
-                </form> -->
-                <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4>
+                <form action="" method="get">
+                    <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href="index.php?newMonth=-1" type="submit" name="dec"><i class="fas fa-chevron-left"></i></a> <a href="index.php?newMonth=+1" type="submit" name="inc"><i class="fas fa-chevron-right"></i></a></h4>
+                </form>
+                <!-- <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4> -->
             </div>
 
             <div class="row days">
-                <div class="col">
+                <div class="col pt-1">
                     <h5 class="text-center">Lundi</h5>
                 </div>
-                <div class="col">
+                <div class="col pt-1">
                     <h5 class="text-center">Mardi</h5>
                 </div>
-                <div class="col">
+                <div class="col pt-1">
                     <h5 class="text-center">Mercredi</h5>
                 </div>
-                <div class="col">
+                <div class="col pt-1">
                     <h5 class="text-center">Jeudi</h5>
                 </div>
-                <div class="col">
+                <div class="col pt-1">
                     <h5 class="text-center">Vendredi</h5>
                 </div>
-                <div class="col">
+                <div class="col pt-1">
                     <h5 class="text-center">Samedi</h5>
                 </div>
-                <div class="col">
+                <div class="col pt-1">
                     <h5 class="text-center">Dimanche</h5>
                 </div>
             </div>

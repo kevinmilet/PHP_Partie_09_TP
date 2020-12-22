@@ -11,11 +11,12 @@ foreach ($chunkCalendar as $week => $days) {
         $caseClass = '';
         $description = '';
         $color = '#fafafa';
+
         // on remplis le calendrier
 
         if ($day === null) {
             $caseClass = ' empty'; // cases vides
-        } elseif ($day . '-' . $month . '-' . $year == date('j-n-Y')) { // mise en évidence jour actuel
+        } elseif ($day . '-' . $month . '-' . $year === date('j-n-Y')) { // mise en évidence jour actuel
             $caseClass = ' current';
         } else {
             $caseClass = ' normal';
@@ -26,9 +27,13 @@ foreach ($chunkCalendar as $week => $days) {
             foreach ($eventType->events as $event) {
                 $date = $event->date;
 
-                if (isset($date) && $date == $day . '-' . $month) {
+                if ($date === $day . '-' . $month) {
                     $description = $event->description;
                     $color = $eventType->color;
+                }
+
+                if (isset($description)) {
+                    ;
                 }
 
             }
@@ -37,6 +42,6 @@ foreach ($chunkCalendar as $week => $days) {
         echo '<div class="col day-case' . $caseClass . '" style="background-color: ' . $color . '">' . $day . ' ' . $description . '</div>';
 
     }
-    // fermeture de la ligne
+    // fermeture de la ligne(row)
     echo '</div>';
 }
