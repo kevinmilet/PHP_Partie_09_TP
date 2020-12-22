@@ -122,52 +122,52 @@ function holiday_day($timestamp)
 
 // tableau des anniversaires
 $birthday = array(
-    '20-6' => '<i class="fas fa-birthday-cake"></i> Kevin',
-    '21-8' => '<i class="fas fa-birthday-cake"></i> Florian M.',
-    '24-4' => '<i class="fas fa-birthday-cake"></i> Timothy',
-    '26-11' => '<i class="fas fa-birthday-cake"></i> Jérome',
-    '29-4' => '<i class="fas fa-birthday-cake"></i> Lucas',
-    '2-9' => '<i class="fas fa-birthday-cake"></i> Julien',
-    '12-11' => '<i class="fas fa-birthday-cake"></i> Vincent',
-    '4-7' => '<i class="fas fa-birthday-cake"></i> Florian L.',
-    '12-3' => '<i class="fas fa-birthday-cake"></i> Laurent',
-    '6-11' => '<i class="fas fa-birthday-cake"></i> Stéphane',
+    '20-6' => 'Kevin',
+    '21-8' => 'Florian M.',
+    '24-4' => 'Timothy',
+    '26-11' => 'Jérome',
+    '29-4' => 'Lucas',
+    '2-9' => 'Julien',
+    '12-11' => 'Vincent',
+    '4-7' => 'Florian L.',
+    '12-3' => 'Laurent',
+    '6-11' => 'Stéphane',
 );
 
 // tableau des fériés générés gràce à la fonction dédiée
 $isHoliday = holiday_day(strtotime($today . '-' . $month . '-' . $year));
 
 
-// fonction de remplissage du tableau des évenements
-function createObjEventType($array, $color, $label) {
+// // fonction de remplissage du tableau des évenements
+// function addToEventsCalendar($array, $color = '', $label = '') {
 
-    $events = [];
+//     $events = [];
+//     $eventsCalendar = [];
 
-    foreach ($array as $key => $value) {
-    $objEventsList = new stdClass;
-    $objEventsList->date = $key;
-    $objEventsList->description = $value;
-    array_push($events, $objEventsList);
-    }  
+//     foreach ($array as $key => $value) {
+//     $objEventsList = new stdClass;
+//     $objEventsList->date = $key;
+//     $objEventsList->description = $value;
+//     array_push($events, $objEventsList);
+//     }  
 
-    $objEventType = new stdClass();
-    $objEventType->events = $events;
-    $objEventType->color = $color;
-    $objEventType->label = $label;
+//     $objEventType = new stdClass();
+//     $objEventType->events = $events;
+//     $objEventType->color = $color;
+//     $objEventType->label = $label;
 
-    return $objEventType;
-}
+//     array_push($eventsCalendar, $objEventType);
 
-$eventsCalendar = [];
+//     return $eventsCalendar;
+// }
 
-array_push($eventsCalendar, createObjEventType($birthday, '#ffcc80', 'Anniversaires'));
+// $eventsCalendar = addToEventsCalendar($birthday, '#ffcc80', 'Anniversaires');
 
-array_push($eventsCalendar, createObjEventType($isHoliday, '#ef9a9a', 'Fériés'));
-
-
+// array_push ($eventsCalendar, addToEventsCalendar($isHoliday, '#ef9a9a', 'Fériés'));
 
 ?>
 
+<!-- partie html de la page -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -267,38 +267,40 @@ foreach ($chunkCalendar as $week => $days) {
     foreach ($chunkCalendar[$week] as $day) {
 
         $caseClass = '';
-        $description = '';
-        $color = '#fafafa';
-        // on remplis le calendrier
 
-        if ($day === null) {
-            $caseClass = ' empty'; // cases vides
+        // on récupère les valeurs du tableau des jours fériés
+        $isHoliday = holiday_day(strtotime($today . '-' . $month . '-' . $year));
+
+        // on rempli le calendrier
+        if ($day == null) { // affichage des cases vides avant 1er jour et après dernier jour
+            $caseClass = ' empty';
         } elseif ($day . '-' . $month . '-' . $year == date('j-n-Y')) { // mise en évidence jour actuel
             $caseClass = ' current';
+        } elseif (isset($isHoliday[$day . '-' . $month])) { // affichage des jours fériés
+            if (key($isHoliday) != $day . '-' . $month || key($isHoliday) == '1-1') {
+                $caseClass = ' holiday';
+            }
+        } elseif (key($birthday) == $day . '-' . $month) { // affichage des anniversaires
+            $caseClass = ' birthday';
         } else {
             $caseClass = ' normal';
         }
 
-        foreach ($eventsCalendar as $eventType) {
-            
-            foreach ($eventType->events as $event){
-                $date = $event->date;
-                
-                if (isset($date) && $date == $day . '-' . $month) {
-                    $description = $event->description;
-                    $color = $eventType->color;
-                } 
-                
-            }
+        if (isset($isHoliday[$day . '-' . $month])) {
+            // affichage jour férié
+            echo '<div class="col day-case' . $caseClass . '">' . $day . ' ' . $isHoliday[$day . '-' . $month] . '</div>';
+        } elseif (isset($birthday[$day . '-' . $month])) {
+            // affichage de l'anniversaire
+            echo '<div class="col day-case' . $caseClass . '">' . $day . ' ' . '<i class="fas fa-birthday-cake"></i> ' . $birthday[$day . '-' . $month] . '</div>';
+        } else {
+            echo '<div class="col day-case' . $caseClass . '">' . $day . '</div>';
         }
-    
-        echo '<div class="col day-case'.$caseClass.'" style="background-color: '.$color.'">' . $day . ' ' . $description . '</div>';
-
     }
     // fermeture de la ligne
     echo '</div>';
 }
 
+var_dump($eventsCalendar);
 ?>
         </div>
     </div>
