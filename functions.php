@@ -146,6 +146,7 @@ $birthday = array(
     '4-7' => '<i class="fas fa-birthday-cake"></i> Florian L.',
     '12-3' => '<i class="fas fa-birthday-cake"></i> Laurent',
     '6-11' => '<i class="fas fa-birthday-cake"></i> Stéphane',
+    '29-2' => 'Toto'
 );
 
 // $tasks = array(
