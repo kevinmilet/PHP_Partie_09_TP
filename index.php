@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'functions.php';
 
 ?>
 
@@ -9,6 +10,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <title>Partie 9 - TP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
@@ -23,23 +25,21 @@ session_start();
         <!-- Formulaire permettant de choisir un mois et une année -->
         <div class="mt-2 formular">
 
-            <p>Choisissez un mois et une année: </p>
+            <!-- <p>Choisissez un mois et une année: </p> -->
 
-            <form action="index.php" method="get" class="form-inline">
+            <form action="index.php" method="get" class="form-inline mt-3">
 
                 <div class="form-group ml-2">
-                    <label for="month">Mois</label>
-                    <select name="month" id="month" class="form-control ml-2">
+                    <!-- <label for="month">Mois</label> -->
+                    <select name="month" id="month" class="form-control">
 
                         <?php
-include 'functions.php';
                         
 foreach ($monthList as $key => $value) {
-    if($key == $_GET['month']) {
-        $selected = ' selected';
-    } else { $selected = '';
-    }
-    echo '<option value="' . $key . '"'.$selected.'>' . $value . '</option>';
+    ?>
+    <option value="<?=$key?>" <?=($month==$key) ? 'selected' : ''?>><?=$value?></option>;
+
+<?php
 }
 ?>
 
@@ -47,16 +47,15 @@ foreach ($monthList as $key => $value) {
                 </div>
 
                 <div class="form-group ml-2">
-                    <label for="year">Année</label>
+                    <!-- <label for="year">Année</label> -->
                     <select name="year" id="year" class="form-control ml-2">
 
                         <?php
-for ($i = (date('Y') - 3); $i <= (date('Y') + 9); $i++) {
-    if ($i == $_GET['year']) {
-        $selected = ' selected';
-    } else { $selected = '';
-    }
-    echo '<option value="' . $i . '"'.$selected.'>' . $i . '</option>';
+for ($i = $currentYear - $interval; $i <= $currentYear + $interval; $i++) {
+    ?>
+   <option value="<?=$i?>" <?= ($year==$i) ? 'selected' : '';?>><?=$i?></option>;
+
+<?php
 }
 ?>
 
@@ -64,7 +63,7 @@ for ($i = (date('Y') - 3); $i <= (date('Y') + 9); $i++) {
                 </div>
 
                 <div class="form-group ml-3">
-                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                    <button type="submit" class="btn btn-primary">Afficher</button>
                 </div>
 
             </form>
@@ -77,7 +76,7 @@ for ($i = (date('Y') - 3); $i <= (date('Y') + 9); $i++) {
                 <!-- <form action="" method="get">
                     <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href="index.php?newMonth=-1" type="submit" name="dec"><i class="fas fa-chevron-left"></i></a> <a href="index.php?newMonth=+1" type="submit" name="inc"><i class="fas fa-chevron-right"></i></a></h4>
                 </form> -->
-                <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4>
+                <h1 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4>
             </div>
 
             <div class="row days">

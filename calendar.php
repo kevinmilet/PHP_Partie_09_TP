@@ -16,7 +16,7 @@ foreach ($chunkCalendar as $week => $days) {
 
         if ($day === null) {
             $caseClass = ' empty'; // cases vides
-        } elseif ($day . '-' . $month . '-' . $year === date('j-n-Y')) { // mise en évidence jour actuel
+        } elseif ($day . '-' . $month . '-' . $year === $currentDate) { // mise en évidence jour actuel
             $caseClass = ' current';
         } else {
             $caseClass = ' normal';

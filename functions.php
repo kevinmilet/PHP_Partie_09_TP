@@ -1,9 +1,16 @@
 <?php
 
-// vérifie si les parametres sont présents, sinon on leur donne une valeur par défaut -> mois et année en cours
-$month = empty($_GET['month']) ? date('n') : $_GET['month'];
-$year = empty($_GET['year']) ? date('Y') : $_GET['year'];
+// variables
 $today = date('j');
+$currentYear = date('Y');
+$currentMonth = date('n');
+$currentDate = date('j-n-Y');
+$interval = 10;
+$calendar = array();
+
+// vérifie si les parametres sont présents, sinon on leur donne une valeur par défaut -> mois et année en cours
+$month = empty($_GET['month']) ? $currentMonth : $_GET['month'];
+$year = empty($_GET['year']) ? $currentYear : $_GET['year'];
 
 // liste des mois en français
 $monthList = array(
@@ -25,24 +32,31 @@ $monthList = array(
 $nbDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 
 // 1er jour du mois choisi
-setlocale(LC_ALL, 'fr_FR', 'french', 'fra');
-$firstDay = intval(strftime('%u', strtotime($year . '-' . $month . '-01')));
+// setlocale(LC_ALL, 'fr_FR', 'french', 'fra');
+// $firstDay = intval(strftime('%u', strtotime($year . '-' . $month . '-01')));
+$firstDay = date('N', strtotime($year . '-' . $month . '-01'));
 
 // dernier jour du mois choisi
-$lastDay = intval(strftime('%u', strtotime($year . '-' . $month . '-' . $nbDays)));
+// $lastDay = intval(strftime('%u', strtotime($year . '-' . $month . '-' . $nbDays)));
+$lastDay = date('N', strtotime($year . '-' . $month . '-' . $nbDays));
 
-// remplissage du tableau calendrier
-$calendar = array();
+// ********** remplissage du tableau calendrier **********
 
-for ($a = 1; $a <= $firstDay - 1; $a++) {
-    array_push($calendar, null);
-}
-for ($b = 1; $b <= $nbDays; $b++) {
-    array_push($calendar, $b);
-}
-for ($c = $lastDay - 1; $c < 6; $c++) {
-    array_push($calendar, null);
-}
+    // génére le nombre de jours avant le premier jour du mois
+    for ($i = 1; $i < $firstDay; $i++) {
+        array_push($calendar, null);
+    }
+
+    // génére le nombre de jours du mois
+    for ($i = 1; $i <= $nbDays; $i++) {
+        array_push($calendar, $i);
+    }
+
+    // génére le nombre de jours après le dernier jour du mois
+    for ($i = $lastDay; $i < 7; $i++) {
+        array_push($calendar, null);
+    }
+// *******************************************************
 
 // fonction pour déterminer si le jour est férié
 function holiday_day($timestamp)
