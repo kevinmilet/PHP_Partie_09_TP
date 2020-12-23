@@ -32,10 +32,6 @@ foreach ($chunkCalendar as $week => $days) {
                     $color = $eventType->color;
                 }
 
-                if (isset($description)) {
-                    ;
-                }
-
             }
         }
 
