@@ -23,7 +23,7 @@ include 'functions.php';
     <div class="container">
 
         <!-- Formulaire permettant de choisir un mois et une année -->
-        <div class="mt-2 formular">
+        <div class="main">
 
             <!-- <p>Choisissez un mois et une année: </p> -->
 
