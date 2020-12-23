@@ -51,7 +51,7 @@ foreach ($monthList as $key => $value) {
                     <select name="year" id="year" class="form-control ml-2">
 
                         <?php
-for ($i = (date('Y') - 1); $i <= (date('Y') + 9); $i++) {
+for ($i = (date('Y') - 3); $i <= (date('Y') + 9); $i++) {
     if ($i == $_GET['year']) {
         $selected = ' selected';
     } else { $selected = '';
