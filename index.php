@@ -74,10 +74,10 @@ for ($i = (date('Y') - 1); $i <= (date('Y') + 9); $i++) {
         <!-- Calendrier -->
         <div class="container my-4">
             <div class="row month-title">
-                <form action="" method="get">
+                <!-- <form action="" method="get">
                     <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?> <a href="index.php?newMonth=-1" type="submit" name="dec"><i class="fas fa-chevron-left"></i></a> <a href="index.php?newMonth=+1" type="submit" name="inc"><i class="fas fa-chevron-right"></i></a></h4>
-                </form>
-                <!-- <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4> -->
+                </form> -->
+                <h4 class="month-year"><?=$monthList[$month];?> <?=$year;?></h4>
             </div>
 
             <div class="row days">
